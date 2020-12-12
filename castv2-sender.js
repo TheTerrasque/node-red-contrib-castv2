@@ -18,6 +18,8 @@ module.exports = function(RED) {
     const YouTubeReceiverAdapter = require('./lib/YouTubeReceiverAdapter');
     const TuneInReceiver = require('./lib/TuneInReceiver');
     const TuneInReceiverAdapter = require('./lib/TuneInReceiverAdapter');
+    const NetflixReceiver = require('./lib/NetflixReceiver');
+    const NetflixReceiverAdapter = require('./lib/NetflixReceiverAdapter');    
 
     function CastV2ConnectionNode(config) {
         RED.nodes.createNode(this, config);
@@ -378,7 +380,8 @@ module.exports = function(RED) {
             GooglePlayMoviesReceiver,
             SpotifyReceiver,
             YouTubeReceiver,
-            TuneInReceiver
+            TuneInReceiver,
+            NetflixReceiver,
         ];
 
         this.receiver = null;
@@ -460,28 +463,11 @@ module.exports = function(RED) {
          * Gets adapter for specified application
          */
         this.getAdapter = function(castV2App) {
-            switch (castV2App.APP_ID) {
-                case DefaultMediaReceiver.APP_ID:
-                    return DefaultMediaReceiverAdapter;
-                    break;
-                case GooglePlayMoviesReceiver.APP_ID:
-                    return GooglePlayMoviesReceiverAdapter;
-                    break;
-                case GooglePlayMusicReceiver.APP_ID:
-                    return GooglePlayMusicReceiverAdapter;
-                    break;
-                case SpotifyReceiver.APP_ID:
-                    return SpotifyReceiverAdapter;
-                    break;
-                case YouTubeReceiver.APP_ID:
-                    return YouTubeReceiverAdapter;
-                    break;
-                case TuneInReceiver.APP_ID:
-                    return TuneInReceiverAdapter;
-                    break;
-                default:
-                    return null;
-                    break;
+            for (let app in this.supportedApplications) {
+                if (castV2App.APP_ID == app.APP_ID) {
+                    return app;
+                }
+                return null;
             }
         }
 
@@ -489,28 +475,11 @@ module.exports = function(RED) {
          * Gets application for command
          */
         this.getCommandApp = function(command) {
-            switch (command.app) {
-                case "DefaultMediaReceiver":
-                    return DefaultMediaReceiver;
-                    break;
-                case "GooglePlayMovies":
-                    return GooglePlayMoviesReceiver;
-                    break;
-                case "GooglePlayMusic":
-                    return GooglePlayMusicReceiver;
-                    break;
-                case "Spotify":
-                    return SpotifyReceiver;
-                    break;
-                case "YouTube":
-                    return YouTubeReceiver;
-                    break;
-                case "TuneIn":
-                    return TuneInReceiver;
-                    break;
-                default:
-                    return null;
-                    break;
+            for (let app in this.supportedApplications) {
+                if (command.app == app.APP_NAME) {
+                    return app;
+                }
+                return null;
             }
         }
 
