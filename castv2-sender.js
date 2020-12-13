@@ -465,8 +465,10 @@ module.exports = function(RED) {
         this.getAdapter = function(castV2App) {
             for (let app in this.supportedApplications) {
                 if (castV2App.APP_ID == app.APP_ID) {
+                    node.log("getAdapter - Picked application: " + app.APP_NAME);
                     return app;
                 }
+                node.log("getAdapter - Could not find match for: " + castV2App.APP_ID);
                 return null;
             }
         }
@@ -477,8 +479,10 @@ module.exports = function(RED) {
         this.getCommandApp = function(command) {
             for (let app in this.supportedApplications) {
                 if (command.app == app.APP_NAME) {
+                    node.log("getCommandApp - Picked application: " + app.APP_NAME);
                     return app;
                 }
+                node.log("getCommandApp - Could not find match for: " + command.app);
                 return null;
             }
         }
