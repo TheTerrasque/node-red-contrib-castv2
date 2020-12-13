@@ -464,7 +464,7 @@ module.exports = function(RED) {
          */
         this.getAdapter = function(castV2App) {
             for (let app in this.supportedApplications) {
-                node.log("Checking : "+ app.APP_NAME + " / " + app.APP_ID);
+                node.log("Checking : "+ app.APP_NAME + " / " + app.APP_ID + " (" + app + ")");
                 if (castV2App.APP_ID == app.APP_ID) {
                     node.log("getAdapter - Picked application: " + app.APP_NAME);
                     return app;
