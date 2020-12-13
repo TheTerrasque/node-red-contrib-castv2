@@ -465,12 +465,13 @@ module.exports = function(RED) {
         this.getAdapter = function(castV2App) {
             for (let app in this.supportedApplications) {
                 if (castV2App.APP_ID == app.APP_ID) {
+                    
                     node.log("getAdapter - Picked application: " + app.APP_NAME);
                     return app;
-                }
-                node.log("getAdapter - Could not find match for: " + castV2App.APP_ID);
-                return null;
+                }    
             }
+            node.log("getAdapter - Could not find match for: " + castV2App.APP_ID);
+            return null;
         }
 
         /*
