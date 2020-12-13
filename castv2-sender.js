@@ -6,19 +6,12 @@ module.exports = function(RED) {
     const Client = require('castv2-client').Client;
     const Bonjour = require('bonjour');
 
-    const DefaultMediaReceiver = require('./lib/DefaultMediaReceiver');
     const DefaultMediaReceiverAdapter = require('./lib/DefaultMediaReceiverAdapter');
-    const GooglePlayMusicReceiver = require('./lib/GooglePlayMusicReceiver');
     const GooglePlayMusicReceiverAdapter = require('./lib/GooglePlayMusicReceiverAdapter');
-    const GooglePlayMoviesReceiver = require('./lib/GooglePlayMoviesReceiver');
     const GooglePlayMoviesReceiverAdapter = require('./lib/GooglePlayMoviesReceiverAdapter');
-    const SpotifyReceiver = require('./lib/SpotifyReceiver');
     const SpotifyReceiverAdapter = require('./lib/SpotifyReceiverAdapter');
-    const YouTubeReceiver = require('./lib/YouTubeReceiver');
     const YouTubeReceiverAdapter = require('./lib/YouTubeReceiverAdapter');
-    const TuneInReceiver = require('./lib/TuneInReceiver');
     const TuneInReceiverAdapter = require('./lib/TuneInReceiverAdapter');
-    const NetflixReceiver = require('./lib/NetflixReceiver');
     const NetflixReceiverAdapter = require('./lib/NetflixReceiverAdapter');    
 
     function CastV2ConnectionNode(config) {
@@ -375,13 +368,13 @@ module.exports = function(RED) {
 
         // Internal state
         this.supportedApplications = [
-            DefaultMediaReceiver,
-            GooglePlayMusicReceiver,
-            GooglePlayMoviesReceiver,
-            SpotifyReceiver,
-            YouTubeReceiver,
-            TuneInReceiver,
-            NetflixReceiver,
+            DefaultMediaReceiverAdapter,
+            GooglePlayMusicReceiverAdapter,
+            GooglePlayMoviesReceiverAdapter,
+            SpotifyReceiverAdapter,
+            YouTubeReceiverAdapter,
+            TuneInReceiverAdapter,
+            NetflixReceiverAdapter,
         ];
 
         this.receiver = null;
@@ -465,9 +458,8 @@ module.exports = function(RED) {
         this.getAdapter = function(castV2App) {
             for (let appid in this.supportedApplications) {
                 let app = this.supportedApplications[appid];
-                node.log("Checking : "+ app.APP_NAME + " / " + app.APP_ID + " (" + app + ")");
-                if (castV2App.APP_ID == app.APP_ID) {
-                    node.log("getAdapter - Picked application: " + app.APP_NAME);
+                if (castV2App.APP_ID == app.castV2App.APP_ID) {
+                    node.log("getAdapter - Picked application: " + app.castV2App.APP_NAME);
                     return app;
                 }    
             }
@@ -479,10 +471,11 @@ module.exports = function(RED) {
          * Gets application for command
          */
         this.getCommandApp = function(command) {
-            for (let app in this.supportedApplications) {
-                if (command.app == app.APP_NAME) {
-                    node.log("getCommandApp - Picked application: " + app.APP_NAME);
-                    return app;
+            for (let appid in this.supportedApplications) {
+                let app = this.supportedApplications[appid];
+                if (command.app == app.castV2App.APP_NAME) {
+                    node.log("getCommandApp - Picked application: " + app.castV2App.APP_NAME);
+                    return app.castV2App;
                 }
             }
             node.log("getCommandApp - Could not find match for: " + command.app);
